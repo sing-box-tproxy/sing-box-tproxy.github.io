@@ -16,11 +16,12 @@ iptables -t mangle -A SING_BOX -d 192.0.0.0/24 -j RETURN
 iptables -t mangle -A SING_BOX -d 224.0.0.0/4 -j RETURN
 iptables -t mangle -A SING_BOX -d 240.0.0.0/4 -j RETURN
 iptables -t mangle -A SING_BOX -d 255.255.255.255/32 -j RETURN
-# 修改为你的内网网段；也可以用10.0.0.0/8
-iptables -t mangle -A SING_BOX -d 10.0.0.0/8 -p udp ! --dport 53 -j RETURN
+# 修改为你的内网网段: 10.0.1.0/24
+iptables -t mangle -A SING_BOX -d 10.0.1.0/24 -p tcp ! --dport 53 -j RETURN
+iptables -t mangle -A SING_BOX -d 10.0.1.0/24 -p udp ! --dport 53 -j RETURN
 # sing-box机器同时是网关，同时也是dns server，所以如果目标ip是自己的53端口，那么也要RETURN
 # dns流量交给clash mihomo来处理，然后拿到结果后再返回给局域网其他机器
-iptables -t mangle -A SING_BOX -d 10.0.1.114 -p udp --dport 53 -j RETURN
+iptables -t mangle -A SING_BOX -d 10.0.1.112 -p udp --dport 53 -j RETURN
 # 修改为你的透明代理程序的端口
 iptables -t mangle -A SING_BOX -p tcp -j TPROXY --on-port 12345 --tproxy-mark 1
 iptables -t mangle -A SING_BOX -p udp -j TPROXY --on-port 12345 --tproxy-mark 1
@@ -42,11 +43,12 @@ iptables -t mangle -A SING_BOX_SELF -p tcp --sport 22 -j RETURN
 iptables -t mangle -A SING_BOX_SELF  -j RETURN -m mark --mark 1234
 
 # 修改为你的内网网段
-iptables -t mangle -A SING_BOX_SELF -d 10.0.0.0/8 -p udp ! --dport 53 -j RETURN
+iptables -t mangle -A SING_BOX_SELF -d 10.0.1.0/24 -p tcp ! --dport 53 -j RETURN
+iptables -t mangle -A SING_BOX_SELF -d 10.0.1.0/24 -p udp ! --dport 53 -j RETURN
 # sing-box机器同时是网关，同时也是dns server，所以如果目标ip是自己的53端口，那么也要RETURN
 # dns流量交给clash mihomo来处理，然后拿到结果后再返回给局域网其他机器
 # 出方向上放行，不要环路了
-iptables -t mangle -A SING_BOX_SELF -s 10.0.1.114 -p udp --sport 53 -j RETURN
+iptables -t mangle -A SING_BOX_SELF -s 10.0.1.112 -p udp --sport 53 -j RETURN
 iptables -t mangle -A SING_BOX_SELF -p tcp -j MARK --set-mark 1
 iptables -t mangle -A SING_BOX_SELF -p udp -j MARK --set-mark 1
 iptables -t mangle -A OUTPUT -j SING_BOX_SELF
