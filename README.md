@@ -20,6 +20,7 @@
 ## 配置文件说明
 
 ### config.json（Sing-box）
+> [config.json](./config.json)
 
 主要配置项：
 
@@ -44,6 +45,7 @@
 ```
 
 ### clash.yaml（Clash / Mihomo DNS）
+> [clash.yaml](./clash.yaml)
 
 主要配置项：
 
@@ -51,6 +53,16 @@
 - 主 DNS：`223.5.5.5`（阿里云）
 - 备用 DNS：`1.1.1.1`（国外，通常走代理）
 - GeoIP 策略：启用 CN，以便国内 IP 优先使用主 DNS
+
+
+### iptables_rules.sh（iptables配置文件）
+> [iptables_rules.sh](./iptables_rules.sh)
+
+将自身流量，以及作为透明代理网关的流量转发到sing-box的tproxy上，进行流量分流
+
+主要配置项：
+- 修改iptables流量规则
+
 
 ## 快速开始
 
@@ -92,6 +104,7 @@ WantedBy=multi-user.target
 ```
 
 ### 2. 配置并应用 iptables/路由 规则
+> [iptables_rules.sh](./iptables_rules.sh)
 
 在执行规则脚本前，请先修改脚本顶部的参数：
 
